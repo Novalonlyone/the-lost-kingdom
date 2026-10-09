@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#130924" />
+    <title>THE LOST KINGDOM — Fantasy World 3D</title>
+    <meta name="description" content="Jelajahi dunia fantasi 3D The Lost Kingdom. Saksikan istana kuno yang megah, menara tinggi, kristal sihir berputar, dan atmosfer senja yang magis dengan Three.js." />
+
+    <!-- Google Fonts: Cinzel for Fantasy Titles, Outfit for Modern UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- 3D Canvas Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-overlay" class="loading-overlay">
+      <div class="loader-content">
+        <div class="rune-portal">
+          <div class="rune-ring rune-ring-outer"></div>
+          <div class="rune-ring rune-ring-inner"></div>
+          <div class="rune-gem"></div>
+        </div>
+        <h2 class="loader-title">MEMBUKA GERBANG KERAJAAN...</h2>
+        <p class="loader-subtitle">THE LOST KINGDOM — FANTASY WORLD</p>
+        <div class="loader-bar-bg">
+          <div id="loader-progress" class="loader-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UI Overlay HUD -->
+    <div id="ui-hud" class="ui-hud">
+      <!-- Top Header -->
+      <header class="hud-header">
+        <div class="brand-badge">
+          <div class="realm-emblem">✦</div>
+          <div class="brand-text">
+            <h1 class="main-title">THE LOST KINGDOM</h1>
+            <p class="main-subtitle">Fantasy World 3D Exploration</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="realm-status-pill">
+            <span class="status-dot pulse"></span>
+            <span id="realm-mana-label">Mana Kuno: 100%</span>
+          </div>
+          <button id="btn-audio-toggle" class="hud-icon-btn" title="Aktifkan/Matikan Musik Fantasi" aria-label="Toggle Audio">
+            <span class="btn-icon" id="audio-icon">🔇</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Notification Toast -->
+      <div id="toast-notification" class="toast-notification"></div>
+
+      <!-- Quick POI (Points of Interest) Selector Bar -->
+      <div class="poi-bar">
+        <span class="poi-label">JELAJAHI:</span>
+        <button class="poi-btn active" data-poi="overview">🌐 Ikhtisar</button>
+        <button class="poi-btn" data-poi="castle">🏰 Istana Utama</button>
+        <button class="poi-btn" data-poi="crystal">🔮 Kristal Ajaib</button>
+        <button class="poi-btn" data-poi="gate">🚪 Gerbang Megah</button>
+        <button class="poi-btn" data-poi="grove">🌲 Hutan Kuno</button>
+      </div>
+
+      <!-- Main Action Floating Control Dock -->
+      <div class="bottom-controls">
+        <div class="control-panel glass-card">
+          <!-- Reset Camera Button -->
+          <button id="btn-reset-cam" class="action-btn primary-btn" title="Kembalikan sudut pandang kamera ke awal">
+            <span class="btn-symbol">↺</span>
+            <div class="btn-details">
+              <span class="btn-title">Reset Kamera</span>
+              <span class="btn-desc">Pandangan Utama</span>
+            </div>
+          </button>
+
+          <!-- Magic Effect Toggle Button -->
+          <button id="btn-magic-effect" class="action-btn magic-btn active" title="Aktifkan atau matikan partikel & energi sihir">
+            <span class="btn-symbol magic-sparkle">✨</span>
+            <div class="btn-details">
+              <span class="btn-title">Efek Sihir</span>
+              <span id="magic-status-badge" class="badge-active">AKTIF</span>
+            </div>
+          </button>
+
+          <!-- Cinematic Orbit Mode -->
+          <button id="btn-cinematic" class="action-btn secondary-btn" title="Putar kamera secara otomatis untuk tur sinematik">
+            <span class="btn-symbol">🎬</span>
+            <div class="btn-details">
+              <span class="btn-title">Mode Sinematik</span>
+              <span id="cinematic-status-badge" class="badge-subtle">OFF</span>
+            </div>
+          </button>
+
+          <!-- Help Toggle Button -->
+          <button id="btn-help-toggle" class="action-btn icon-only-btn" title="Petunjuk Kontrol Kamera" aria-label="Petunjuk Kontrol">
+            <span>❓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Camera Control Guide Card -->
+      <aside id="controls-guide" class="controls-guide glass-card">
+        <div class="guide-header">
+          <span class="guide-title">🎮 Panduan Kontrol Kamera</span>
+          <button id="btn-close-guide" class="guide-close-btn" aria-label="Tutup Panduan">✕</button>
+        </div>
+        <div class="guide-items">
+          <div class="guide-item">
+            <span class="guide-icon">🖱️</span>
+            <div>
+              <strong>Klik Kiri & Geser:</strong>
+              <p>Putar sudut pandang 360°</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">🔍</span>
+            <div>
+              <strong>Scroll Mouse / Cubit:</strong>
+              <p>Perbesar & perkecil (Zoom)</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">↔️</span>
+            <div>
+              <strong>Klik Kanan & Geser:</strong>
+              <p>Geser posisi kamera (Pan)</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">📱</span>
+            <div>
+              <strong>Sentuh Layar HP:</strong>
+              <p>1 jari putar, 2 jari zoom/geser</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mini FPS / Performance Badge -->
+      <div class="bottom-bar-footer">
+        <span class="lore-text">Dunia Kuno Kerajaan Terlupakan • Tiga Menara & Kristal Abadi</span>
+      </div>
+    </div>
+
+    <!-- Application Script Entry -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
